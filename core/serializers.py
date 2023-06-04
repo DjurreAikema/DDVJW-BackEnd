@@ -23,5 +23,4 @@ class UserSerializer(ModelSerializer):
 
         # Save the user
         instance.save()
-
         return instance
