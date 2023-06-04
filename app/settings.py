@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
     'core'
 ]
 
@@ -129,5 +129,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
 
-CORS_ORIGIN_ALLOW_ALL = True  # TODO Not all only specific
+CORS_ORIGIN_ALLOW_ALL = True  # TODO Not all
 CORS_ALLOW_CREDENTIALS = True
