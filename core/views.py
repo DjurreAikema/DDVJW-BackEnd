@@ -1,10 +1,12 @@
+import datetime
+
 from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.authentication import create_access_token, create_refresh_token, decode_refresh_token
 from core.middleware import JWTAuthentication
-from core.models import User
+from core.models import User, UserToken
 from core.serializers import UserSerializer
 
 
@@ -38,6 +40,12 @@ class LoginAPIView(APIView):
         access_token = create_access_token(user.id)
         refresh_token = create_refresh_token(user.id)
 
+        UserToken.objects.create(
+            user_id=user.id,
+            token=refresh_token,
+            expired_at=datetime.datetime.utcnow() + datetime.timedelta(days=7)
+        )
+
         response = Response()
         response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
         response.data = {
@@ -59,6 +67,13 @@ class RefreshAPIView(APIView):
         refresh_token = request.COOKIES.get('refresh_token')
         user_id = decode_refresh_token(refresh_token)
 
+        if not UserToken.objects.filter(
+                user_id=user_id,
+                token=refresh_token,
+                expired_at__gt=datetime.datetime.now(tz=datetime.timezone.utc)
+        ).exists():
+            raise exceptions.AuthenticationFailed('Unauthenticated')
+
         access_token = create_access_token(user_id)
 
         return Response({
@@ -67,7 +82,11 @@ class RefreshAPIView(APIView):
 
 
 class LogoutAPIView(APIView):
+
     def post(self, request):
+        refresh_token = request.COOKIES.get('refresh_token')
+        UserToken.objects.filter(token=refresh_token).delete()
+
         response = Response()
         response.delete_cookie(key='refresh_token')
         response.data = {
