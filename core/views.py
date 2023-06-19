@@ -30,7 +30,7 @@ class RegisterAPIView(APIView):
         except Exception as e:
             return Response({
                 'message': 'An error occurred: {}'.format(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         return Response(serializer.data)
 
@@ -74,7 +74,7 @@ class LoginAPIView(APIView):
         except Exception as e:
             return Response({
                 'message': 'An error occurred: {}'.format(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         return response
 
@@ -89,7 +89,7 @@ class UserAPIView(APIView):
         except Exception as e:
             return Response({
                 'message': 'An error occurred: {}'.format(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         return Response(serialized_user)
 
@@ -98,6 +98,10 @@ class RefreshAPIView(APIView):
     def post(self, request):
         try:
             refresh_token = request.COOKIES.get('refresh_token')
+
+            if refresh_token is None:
+                raise exceptions.AuthenticationFailed('Unauthenticated')
+
             user_id = decode_refresh_token(refresh_token)
 
             # Check if the refresh token is valid
@@ -114,7 +118,7 @@ class RefreshAPIView(APIView):
         except Exception as e:
             return Response({
                 'message': 'An error occurred: {}'.format(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         return Response({
             'token': access_token
@@ -131,7 +135,7 @@ class LogoutAPIView(APIView):
         except Exception as e:
             return Response({
                 'message': 'An error occurred: {}'.format(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         # Create a response object and delete the refresh_token cookie
         response = Response()
@@ -170,7 +174,7 @@ class ForgotAPIView(APIView):
         except Exception as e:
             return Response({
                 'message': 'An error occurred: {}'.format(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         return Response({
             'message': 'success'
@@ -208,7 +212,7 @@ class ResetAPIView(APIView):
         except Exception as e:
             return Response({
                 'message': 'An error occurred: {}'.format(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         return Response({
             'message': 'success'
