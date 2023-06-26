@@ -3,7 +3,7 @@ import random
 import string
 
 from django.core.mail import send_mail
-from rest_framework import exceptions, status
+from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
