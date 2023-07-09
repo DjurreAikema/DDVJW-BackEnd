@@ -79,21 +79,6 @@ class LoginAPIView(APIView):
         return response
 
 
-class UserAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
-
-    def get(self, request):
-        try:
-            serialized_user = UserSerializer(request.user).data
-
-        except Exception as e:
-            return Response({
-                'message': 'An error occurred: {}'.format(e)
-            })
-
-        return Response(serialized_user)
-
-
 class RefreshAPIView(APIView):
     def post(self, request):
         try:
@@ -217,3 +202,45 @@ class ResetAPIView(APIView):
         return Response({
             'message': 'success'
         })
+
+
+class UserAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        try:
+            serialized_user = UserSerializer(request.user).data
+
+        except Exception as e:
+            return Response({
+                'message': 'An error occurred: {}'.format(e)
+            })
+
+        return Response(serialized_user)
+
+
+class UserUpdateView(APIView):
+    def put(self, request, pk):
+        # Single User Update
+        user = User.objects.get(pk=pk)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+
+    def patch(self, request):
+        # Bulk User Update
+        user_data = request.data
+        user_ids = [user['id'] for user in user_data]
+
+        users = User.objects.filter(pk__in=user_ids)
+        serializer = UserSerializer(users, data=user_data, partial=True, many=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
