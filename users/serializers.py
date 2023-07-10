@@ -26,6 +26,24 @@ class UserSerializer(ModelSerializer):
         return instance
 
 
+class RegisterSerializer(serializers.Serializer):
+    first_name = serializers.CharField(max_length=255)
+    last_name = serializers.CharField(max_length=255)
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=255)
+    password_confirm = serializers.CharField(max_length=255)
+    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
+
+    def validate(self, attrs):
+        password = attrs.get('password')
+        confirm_password = attrs.get('password_confirm')
+
+        if password and confirm_password and password != confirm_password:
+            raise serializers.ValidationError("Passwords do not match.")
+
+        return attrs
+
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(max_length=255)

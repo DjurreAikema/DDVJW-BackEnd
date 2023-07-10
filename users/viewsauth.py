@@ -11,26 +11,23 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import ResetPassword
-from users.serializers import UserSerializer, LoginSerializer, PasswordForgotSerializer, ResetPasswordSerializer
+from users.serializers import UserSerializer, LoginSerializer, PasswordForgotSerializer, ResetPasswordSerializer, RegisterSerializer
 
 
 class UserAuthViewSet(viewsets.GenericViewSet):
     permission_classes = [AllowAny]
 
     # --- Register
-    @action(detail=False, methods=['post'], serializer_class=UserSerializer)
+    @action(detail=False, methods=['post'], serializer_class=RegisterSerializer)
     def register(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = RegisterSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
+            user_serializer = UserSerializer(data=serializer.validated_data)
 
-            # Check if password and password_confirm fields match
-            if serializer.validated_data['password'] != serializer.validated_data['password_confirm']:
-                return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-
-            serializer.save()
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if user_serializer.is_valid():
+                user_serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
