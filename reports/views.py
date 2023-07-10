@@ -1,9 +1,19 @@
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.viewsets import ModelViewSet
 
 from reports.models import Report
 from reports.permissions import CanViewReportList, CanViewReportDetails, CanCreateReport, CanUpdateReport, CanDeleteReport
 from reports.serializers import ReportSerializer
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'reports': reverse('report-list', request=request, format=format)
+    })
 
 
 class ReportViewSet(ModelViewSet):
