@@ -5,14 +5,10 @@ from schools.models import School
 
 
 class User(AbstractUser):
-    ADMIN = 1
-    TRAINER = 2
-    CLIENT = 3
-
     ROLE_CHOICES = (
-        (ADMIN, 'Admin'),
-        (TRAINER, 'Trainer'),
-        (CLIENT, 'Client')
+        ('admin', 'Admin'),
+        ('trainer', 'Trainer'),
+        ('client', 'Client')
     )
 
     username = None
@@ -20,7 +16,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=False, null=False, default=CLIENT)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=False, null=False, default='client')
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True)
 
     USERNAME_FIELD = 'email'

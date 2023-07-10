@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.viewsets import ModelViewSet
 
+from core.middleware import JWTAuthentication
 from reports.models import Report
 from reports.permissions import CanViewReportList, CanViewReportDetails, CanCreateReport, CanUpdateReport, CanDeleteReport
 from reports.serializers import ReportSerializer
@@ -19,8 +20,9 @@ def api_root(request, format=None):
 class ReportViewSet(ModelViewSet):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes_by_action = {
-        'list': [IsAuthenticated, CanViewReportList],
+        'list': [CanViewReportList],
         'retrieve': [IsAuthenticated, CanViewReportDetails],
         'create': [IsAuthenticated, CanCreateReport],
         'update': [IsAuthenticated, CanUpdateReport],
