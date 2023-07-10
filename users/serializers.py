@@ -41,3 +41,17 @@ class PasswordForgotSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError("Email does not belong to a registered user.")
         return value
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=255)
+    confirm_password = serializers.CharField(max_length=255)
+
+    def validate(self, data):
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
+
+        if password != confirm_password:
+            raise serializers.ValidationError("Passwords do not match.")
+
+        return data

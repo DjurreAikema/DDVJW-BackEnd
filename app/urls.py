@@ -17,7 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from app.views import api_root
+
 urlpatterns = [
+    # Include the api_root view
+    path('', api_root, name='api-root'),
+
     path('admin/', admin.site.urls),
     path('api-auth/', include('users.urls-auth'))
 ]

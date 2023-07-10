@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import ResetPassword
-from users.serializers import UserSerializer, LoginSerializer, PasswordForgotSerializer
+from users.serializers import UserSerializer, LoginSerializer, PasswordForgotSerializer, ResetPasswordSerializer
 
 
 class UserAuthViewSet(viewsets.GenericViewSet):
@@ -24,7 +24,7 @@ class UserAuthViewSet(viewsets.GenericViewSet):
 
         # Check if password and password_confirm fields match
         if data['password'] != data['password_confirm']:
-            raise exceptions.APIException('Passwords do not match')
+            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = UserSerializer(data=data)
 
@@ -98,5 +98,31 @@ class UserAuthViewSet(viewsets.GenericViewSet):
             )
 
             return Response({'message': 'Password reset instructions sent'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # --- Password reset
+    @action(detail=False, methods=['post'])
+    def password_reset(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            token = serializer.validated_data['token']
+            new_password = serializer.validated_data['new_password']
+
+            try:
+                reset_obj = ResetPassword.objects.get(token=token)
+            except ResetPassword.DoesNotExist:
+                return Response({'error': 'Invalid or expired token'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Update the user's password
+            user = reset_obj.user
+            user.set_password(new_password)
+            user.save()
+
+            # Delete the reset token
+            reset_obj.delete()
+
+            return Response({'message': 'Password reset successful'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
