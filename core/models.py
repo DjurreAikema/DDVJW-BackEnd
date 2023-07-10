@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from schools.models import School
+
 
 class User(AbstractUser):
     ADMIN = 1
@@ -13,12 +15,13 @@ class User(AbstractUser):
         (CLIENT, 'Client')
     )
 
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
+    username = None
     email = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
-    username = None
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=False, null=False, default=CLIENT)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
