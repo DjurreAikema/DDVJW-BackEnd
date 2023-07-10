@@ -134,3 +134,6 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
