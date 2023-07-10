@@ -20,6 +20,7 @@ from .views import api_root
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
 
     path('api/', api_root),
     path('api/', include('core.urls')),

@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from core.middleware import JWTAuthentication
@@ -11,11 +12,11 @@ class SchoolViewSet(ModelViewSet):
     serializer_class = SchoolSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes_by_action = {
-        'list': [CanViewSchoolList],
-        'retrieve': [CanViewSchoolDetails],
-        'create': [CanCreateSchool],
-        'update': [CanUpdateSchool],
-        'destroy': [CanDeleteSchool],
+        'list': [IsAuthenticated, CanViewSchoolList],
+        'retrieve': [IsAuthenticated, CanViewSchoolDetails],
+        'create': [IsAuthenticated, CanCreateSchool],
+        'update': [IsAuthenticated, CanUpdateSchool],
+        'destroy': [IsAuthenticated, CanDeleteSchool],
     }
 
     def get_permissions(self):
