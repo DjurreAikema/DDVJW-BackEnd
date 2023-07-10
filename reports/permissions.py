@@ -4,7 +4,6 @@ from rest_framework.permissions import BasePermission
 class CanViewReportList(BasePermission):
     def has_permission(self, request, view):
         # Allow admins to view all reports, trainers to view their own reports, and clients to view their assigned reports
-        print(request.user.role)
         if request.user.role == 'admin':
             return True
         elif request.user.role == 'trainer' and view.action == 'list':
