@@ -14,7 +14,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    role = models.CharField(max_length=7, choices=ROLE_CHOICES, blank=False, null=False, default='client')
+    role = models.CharField(max_length=7, choices=ROLE_CHOICES, blank=False, null=False, default='Client')
     # school = models.ForeignKey(School, on_delete=models.CASCADE, null=True)
 
     USERNAME_FIELD = 'email'

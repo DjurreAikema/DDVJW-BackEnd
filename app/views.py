@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'user-auth': reverse('user-auth-list', request=request, format=format),
+        'api-auth': reverse('api-auth', request=request, format=format),
         # 'schools': reverse('school-list', request=request, format=format),
         # 'reports': reverse('report-list', request=request, format=format)
     })

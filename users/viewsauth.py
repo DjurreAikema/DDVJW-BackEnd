@@ -18,17 +18,16 @@ class UserAuthViewSet(viewsets.GenericViewSet):
     permission_classes = [AllowAny]
 
     # --- Register
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], serializer_class=UserSerializer)
     def register(self, request):
-        data = request.data
-
-        # Check if password and password_confirm fields match
-        if data['password'] != data['password_confirm']:
-            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = UserSerializer(data=data)
+        serializer = UserSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
+
+            # Check if password and password_confirm fields match
+            if serializer.validated_data['password'] != serializer.validated_data['password_confirm']:
+                return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -36,7 +35,7 @@ class UserAuthViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Login
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], serializer_class=LoginSerializer)
     def login(self, request):
         serializer = LoginSerializer(data=request.data)
 
@@ -67,7 +66,7 @@ class UserAuthViewSet(viewsets.GenericViewSet):
         return response
 
     # --- Password forgot
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], serializer_class=PasswordForgotSerializer)
     def password_forgot(self, request):
         serializer = PasswordForgotSerializer(data=request.data)
 
@@ -102,7 +101,7 @@ class UserAuthViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Password reset
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], serializer_class=ResetPasswordSerializer)
     def password_reset(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
 
