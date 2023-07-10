@@ -4,7 +4,7 @@ import string
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.http import HttpResponse
-from rest_framework import viewsets, status, exceptions
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
