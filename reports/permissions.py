@@ -25,6 +25,12 @@ class CanViewReportDetails(BasePermission):
         return False
 
 
+class CanCreateReport(BasePermission):
+    def has_permission(self, request, view):
+        # Allow admins and trainers to create reports
+        return request.user.role == 'admin' or request.user.role == 'trainer'
+
+
 class CanUpdateReport(BasePermission):
     def has_object_permission(self, request, view, obj):
         # Only allow trainers, admins, and the assigned client to update reports
@@ -32,7 +38,7 @@ class CanUpdateReport(BasePermission):
             return True
         elif request.user.role == 'trainer':
             return True
-        elif request.user.role == 'client' and view.action in ['partial_update']:
+        elif request.user.role == 'client' and view.action == 'partial_update':
             return True
         return False
 
