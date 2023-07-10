@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'core',
-    'schools'
+    'schools',
+    'reports'
 ]
 
 MIDDLEWARE = [
