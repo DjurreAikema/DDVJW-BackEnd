@@ -1,4 +1,3 @@
-from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet
 
 from core.middleware import JWTAuthentication
