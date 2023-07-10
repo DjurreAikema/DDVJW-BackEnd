@@ -10,7 +10,7 @@ class User(AbstractUser):
     )
 
     username = None
-    email = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -22,5 +22,5 @@ class User(AbstractUser):
 
 
 class ResetPassword(models.Model):
-    email = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255)
     token = models.CharField(max_length=20, unique=True)

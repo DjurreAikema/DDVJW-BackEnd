@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.models import ResetPassword
+from users.models import ResetPassword, User
 from users.serializers import UserSerializer, LoginSerializer, PasswordForgotSerializer, ResetPasswordSerializer, RegisterSerializer
 
 
@@ -112,7 +112,7 @@ class UserAuthViewSet(viewsets.GenericViewSet):
                 return Response({'error': 'Invalid or expired token'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Update the user's password
-            user = reset_obj.user
+            user = User.objects.filter(email=reset_obj.email).first()
             user.set_password(new_password)
             user.save()
 
