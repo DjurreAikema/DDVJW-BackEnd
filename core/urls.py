@@ -1,7 +1,11 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from core.views import RegisterAPIView, LoginAPIView, UserAPIView, RefreshAPIView, LogoutAPIView, ForgotAPIView, ResetAPIView, \
-    UserUpdateView
+from core.views import RegisterAPIView, LoginAPIView, RefreshAPIView, LogoutAPIView, ForgotAPIView, ResetAPIView
+from core.viewsuser import UserViewSet
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
     # Auth
@@ -13,6 +17,5 @@ urlpatterns = [
     path('reset', ResetAPIView.as_view()),
 
     # User
-    path('user', UserAPIView.as_view()),
-    path('users/<int:pk>/', UserUpdateView.as_view(), name='user-update'),
+    path('', include(router.urls))
 ]
