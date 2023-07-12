@@ -6,6 +6,5 @@ router = DefaultRouter()
 router.register(r'reports', ReportViewSet, basename='report')
 
 urlpatterns = [
-    # path('', api_root),
     path('', include(router.urls)),
 ]

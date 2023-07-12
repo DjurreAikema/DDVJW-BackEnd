@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from core.middleware import JWTAuthentication
@@ -11,12 +12,12 @@ class ReportViewSet(ModelViewSet):
     serializer_class = ReportSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes_by_action = {
-        'list': [CanViewReportList],
-        'retrieve': [CanViewReportDetails],
-        'create': [CanCreateReport],
-        'update': [CanUpdateReport],
-        'partial_update': [CanUpdateReport],
-        'destroy': [CanDeleteReport],
+        'list': [IsAuthenticated, CanViewReportList],
+        'retrieve': [IsAuthenticated, CanViewReportDetails],
+        'create': [IsAuthenticated, CanCreateReport],
+        'update': [IsAuthenticated, CanUpdateReport],
+        'partial_update': [IsAuthenticated, CanUpdateReport],
+        'destroy': [IsAuthenticated, CanDeleteReport],
     }
 
     def get_permissions(self):
