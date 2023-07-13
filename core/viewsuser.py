@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from core.middleware import JWTAuthentication
 from core.models import User
 from core.permissions import CanViewUserList, CanViewUserDetails, CanCreateUser, CanUpdateUser, CanDeleteUser
-from core.serializers import UserSerializer
+from core.serializers import UserSerializer, UserCreateSerializer
 
 
 class UserViewSet(ModelViewSet):
@@ -24,3 +24,8 @@ class UserViewSet(ModelViewSet):
             return [permission() for permission in self.permission_classes_by_action[self.action]]
         except KeyError:
             return super().get_permissions()
+
+    def get_serializer_class(self):
+        if self.action in ["create"]:
+            return UserCreateSerializer
+        return super().get_serializer_class()

@@ -13,13 +13,13 @@ class User(AbstractUser):
 
     username = None
     email = models.CharField(max_length=255, unique=True)
-    password = models.CharField(max_length=255)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
+    password = models.CharField(max_length=255, blank=True)
+    first_name = models.CharField(max_length=255, null=True, blank=True)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
     role = models.CharField(max_length=7, choices=ROLE_CHOICES, blank=False, null=False, default='client')
 
-    school = models.ForeignKey(School, on_delete=models.SET_NULL, related_name='school', null=True)
-    trainer = models.ForeignKey('self', on_delete=models.SET_NULL, null=True)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, related_name='school', null=True, blank=True)
+    trainer = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

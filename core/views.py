@@ -13,26 +13,26 @@ from core.models import User, UserToken, ResetPassword
 from core.serializers import UserSerializer
 
 
-class RegisterAPIView(APIView):
-    def post(self, request):
-        try:
-            data = request.data
-
-            # Check if password and password_confirm fields match
-            if data['password'] != data['password_confirm']:
-                raise exceptions.APIException('Passwords do not match')
-
-            # Instantiate the serializer with the request data
-            serializer = UserSerializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-        except Exception as e:
-            return Response({
-                'message': 'An error occurred: {}'.format(e)
-            })
-
-        return Response(serializer.data)
+# class RegisterAPIView(APIView):
+#     def post(self, request):
+#         try:
+#             data = request.data
+#
+#             # Check if password and password_confirm fields match
+#             if data['password'] != data['password_confirm']:
+#                 raise exceptions.APIException('Passwords do not match')
+#
+#             # Instantiate the serializer with the request data
+#             serializer = UserSerializer(data=data)
+#             serializer.is_valid(raise_exception=True)
+#             serializer.save()
+#
+#         except Exception as e:
+#             return Response({
+#                 'message': 'An error occurred: {}'.format(e)
+#             })
+#
+#         return Response(serializer.data)
 
 
 class LoginAPIView(APIView):
@@ -217,30 +217,3 @@ class UserAPIView(APIView):
             })
 
         return Response(serialized_user)
-
-
-class UserUpdateView(APIView):
-    def put(self, request, pk):
-        # Single User Update
-        user = User.objects.get(pk=pk)
-        serializer = UserSerializer(user, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=400)
-
-    def patch(self, request):
-        # Bulk User Update
-        user_data = request.data
-        user_ids = [user['id'] for user in user_data]
-
-        users = User.objects.filter(pk__in=user_ids)
-        serializer = UserSerializer(users, data=user_data, partial=True, many=True)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=400)
