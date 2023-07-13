@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from core.views import RegisterAPIView, LoginAPIView, RefreshAPIView, LogoutAPIView, ForgotAPIView, ResetAPIView
+from core.views import RegisterAPIView, LoginAPIView, RefreshAPIView, LogoutAPIView, ForgotAPIView, ResetAPIView, UserAPIView
 from core.viewsuser import UserViewSet
 
 router = DefaultRouter()
@@ -17,5 +17,6 @@ urlpatterns = [
     path('reset', ResetAPIView.as_view()),
 
     # User
+    path('user', UserAPIView.as_view()),
     path('', include(router.urls))
 ]
