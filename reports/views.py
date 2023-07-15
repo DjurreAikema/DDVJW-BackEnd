@@ -1,4 +1,6 @@
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from core.middleware import JWTAuthentication
@@ -19,6 +21,15 @@ class ReportViewSet(ModelViewSet):
         'partial_update': [IsAuthenticated, CanUpdateReport],
         'destroy': [IsAuthenticated, CanDeleteReport],
     }
+
+    @action(detail=True)
+    def get_active_report(self, request, pk):
+        report = Report.objects.filter(client=pk, completed=False).first()
+        if not report:
+            return Response({'message': 'no active report'})
+
+        serializer = self.get_serializer(report, many=False)
+        return Response(serializer.data)
 
     def get_permissions(self):
         try:
