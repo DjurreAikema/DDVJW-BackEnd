@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from reports.models import Report
 from schools.models import School
 
 
@@ -21,7 +20,6 @@ class User(AbstractUser):
 
     trainer = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, related_name='school', null=True, blank=True)
-    active_report = models.ForeignKey(Report, on_delete=models.SET_NULL, related_name='active_report', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
