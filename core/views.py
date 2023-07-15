@@ -2,6 +2,7 @@ import datetime
 import random
 import string
 
+from django.contrib.auth.models import update_last_login
 from django.core.mail import send_mail
 from rest_framework import exceptions
 from rest_framework.response import Response
@@ -44,6 +45,7 @@ class LoginAPIView(APIView):
 
             # Retrieve the user with the given email
             user = User.objects.filter(email=email).first()
+            update_last_login(None, user)
 
             # Raise an AuthenticationFailed exception if the user is not found
             if user is None:
